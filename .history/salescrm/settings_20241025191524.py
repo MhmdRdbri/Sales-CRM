@@ -63,15 +63,13 @@ CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[])
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "salescrm_db",
-        "USER": "postgres",
+        "NAME": "coplanner",
+        "USER": "salescrm_db",
         "PASSWORD": "220152",
         "HOST": "localhost",
         "PORT": "5432",
     }
 }
-
-
 
 
 # Password validation

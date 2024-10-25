@@ -1,17 +1,16 @@
 from pathlib import Path
-import environ
-import os
 BASE_DIR = Path(__file__).resolve().parent.parent
+import environ
 env = environ.Env()
-environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
+environ.Env.read_env()
 
 # SECRET_KEY = 'django-insecure-icig@9o$jv=+6&i6m69asig*76z(259k5rpcvyu7rk)j)+)hj+'
 
 SECRET_KEY = env("SECRET_KEY")
-print("SECRET_KEY from .env:", env("SECRET_KEY", default="Not found"))
-DEBUG = env.bool('DEBUG', default=False)
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
+DEBUG = True
+
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -55,23 +54,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'salescrm.wsgi.application'
 
-CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[])
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "salescrm_db",
-        "USER": "postgres",
-        "PASSWORD": "220152",
-        "HOST": "localhost",
-        "PORT": "5432",
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
-
 
 
 # Password validation
