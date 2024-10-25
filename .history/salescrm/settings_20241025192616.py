@@ -23,15 +23,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
-    'rest_framework_simplejwt',
-    'rest_framework_simplejwt.token_blacklist',
-    'django_jalali',
-    "corsheaders",
-    'drf_spectacular',
-    'django_celery_beat',
-    'django_celery_results',
-    'channels',
 ]
 
 MIDDLEWARE = [
@@ -80,8 +71,7 @@ DATABASES = {
     }
 }
 
-
-
+#22522
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
