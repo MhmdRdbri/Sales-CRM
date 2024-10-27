@@ -46,7 +46,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'salescrm.urls'
-AUTH_USER_MODEL = 'accountemployee.CustomUser'
+AUTH_USER_MODEL = 'account.CustomUser'
 
 
 TEMPLATES = [

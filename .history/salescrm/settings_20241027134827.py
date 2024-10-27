@@ -32,7 +32,7 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'django_celery_results',
     'channels',
-    'accountemployee'
+    'accountemployee\apps.AccountemployeeConfig',
 ]
 
 MIDDLEWARE = [
@@ -46,8 +46,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'salescrm.urls'
-AUTH_USER_MODEL = 'accountemployee.CustomUser'
-
 
 TEMPLATES = [
     {

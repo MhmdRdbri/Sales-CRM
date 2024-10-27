@@ -32,8 +32,7 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'django_celery_results',
     'channels',
-    'accountemployee'
-]
+    ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -46,8 +45,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'salescrm.urls'
-AUTH_USER_MODEL = 'accountemployee.CustomUser'
-
 
 TEMPLATES = [
     {
@@ -82,6 +79,9 @@ DATABASES = {
         "PORT": "5432",
     }
 }
+
+# AUTH_USER_MODEL = 'accountemployee.CustomUser'
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

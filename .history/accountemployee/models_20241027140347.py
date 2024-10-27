@@ -21,21 +21,44 @@ class CustomUserManager(BaseUserManager):
 
         return self.create_user(phone_number, password, **extra_fields)
 
-
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     phone_number = models.CharField(unique=True, max_length=15)
-    full_name = models.CharField(max_length=150)
-    email = models.EmailField(blank=True, null=True, default='a@gmail.com')
+    first_name = models.CharField(max_length=150)
+    last_name = models.CharField(max_length=150)
+    # email = models.EmailField(unique=True, default='a@gmail.com')
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
+    has_special_access = models.BooleanField(default=False)
+    telegram_chat_id = models.CharField(max_length=255, blank=True, null=True) 
+
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'phone_number'
 
+    groups = models.ManyToManyField(
+        'auth.Group',
+        related_name='customuser_set',  # Changed related name
+        blank=True,
+        help_text='The groups this user belongs to. A user will get all permissions '
+                  'granted to each of their groups.',
+        verbose_name='groups',
+    )
+    
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        related_name='customuser_set',  # Changed related name
+        blank=True,
+        help_text='Specific permissions for this user.',
+        verbose_name='user permissions',
+    )
+
     def __str__(self):
         return self.full_name
         
+
+
+
 class PasswordResetToken(models.Model):
     user = models.ForeignKey('CustomUser', on_delete=models.CASCADE)
     token = models.CharField(max_length=6)
@@ -54,25 +77,16 @@ class PasswordResetToken(models.Model):
     def is_expired(self):
         return self.expiration_time <= timezone.now()
 
-class PendingRegistration(models.Model):
-    phone_number = models.CharField(unique=True, max_length=15)
-    full_name = models.CharField(max_length=150)
-    password = models.CharField(max_length=128)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.last_name
-
 class Profile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='profile')
     picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
-    full_name = models.CharField(max_length=255, blank=True, null=True)
-    phone_number = models.CharField(max_length=15)
+    name = models.CharField(max_length=255, blank=True, null=True)
+    last_name = models.CharField(max_length=255, blank=True, null=True)
+    post_code = models.CharField(max_length=20, blank=True, null=True)
+    date_of_birth = models.DateField(blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
+    phone_number = models.CharField(max_length=15)
     work_position = models.CharField(max_length=255, blank=True, null=True)
-    department = models.CharField(max_length=255, blank=True, null=True)
-    date_of_assignment = models.DateField(blank=True, null=True)
-    telegram_id = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -88,4 +102,4 @@ class Profile(models.Model):
         super(Profile, self).save(*args, **kwargs)
 
     def __str__(self):
-        return f'پروفایل {self.full_name} '
+        return f'پروفایل {self.name} {self.last_name} '
