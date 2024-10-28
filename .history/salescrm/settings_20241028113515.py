@@ -63,7 +63,7 @@ SPECTACULAR_SETTINGS = {
     'TITLE': 'SalesCRM API',
     'DESCRIPTION': 'CRM',
     'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': True,
+    'SERVE_INCLUDE_SCHEMA': False,
 }
 
 TEMPLATES = [

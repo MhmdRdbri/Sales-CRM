@@ -23,7 +23,6 @@ from telegram import Bot
 
 class CustomUserLoginAPIView(APIView):
     permission_classes = [AllowAny]
-    serializer_class = CustomUserLoginSerializer
 
     def post(self, request, *args, **kwargs):
         serializer = CustomUserLoginSerializer(data=request.data)
@@ -57,9 +56,9 @@ class CustomUserLoginAPIView(APIView):
 
 class CreateUserView(APIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = UserCreateSerializer
 
     def post(self, request, *args, **kwargs):
+        # Ensure the user has the admin work position
         if request.user.profile.work_position != 'admin':
             return Response({"error": "Only users with the 'admin' work position can create new users."},
                             status=status.HTTP_403_FORBIDDEN)

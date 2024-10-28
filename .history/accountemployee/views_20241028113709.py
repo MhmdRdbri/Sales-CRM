@@ -23,7 +23,6 @@ from telegram import Bot
 
 class CustomUserLoginAPIView(APIView):
     permission_classes = [AllowAny]
-    serializer_class = CustomUserLoginSerializer
 
     def post(self, request, *args, **kwargs):
         serializer = CustomUserLoginSerializer(data=request.data)
@@ -55,18 +54,3 @@ class CustomUserLoginAPIView(APIView):
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class CreateUserView(APIView):
-    permission_classes = [IsAuthenticated]
-    serializer_class = UserCreateSerializer
-
-    def post(self, request, *args, **kwargs):
-        if request.user.profile.work_position != 'admin':
-            return Response({"error": "Only users with the 'admin' work position can create new users."},
-                            status=status.HTTP_403_FORBIDDEN)
-        
-        serializer = UserCreateSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.save()
-            return Response({"message": "User created successfully.", "user_id": user.id}, status=status.HTTP_201_CREATED)
-        
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
