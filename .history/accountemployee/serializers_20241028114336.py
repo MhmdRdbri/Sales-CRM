@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import authenticate
-from .models import *
+from .models import CustomUser
 
 class CustomUserLoginSerializer(serializers.Serializer):
     phone_number = serializers.CharField()

@@ -23,7 +23,6 @@ from telegram import Bot
 
 class CustomUserLoginAPIView(APIView):
     permission_classes = [AllowAny]
-    serializer_class = CustomUserLoginSerializer
 
     def post(self, request, *args, **kwargs):
         serializer = CustomUserLoginSerializer(data=request.data)
