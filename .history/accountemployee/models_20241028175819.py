@@ -61,10 +61,6 @@ class PasswordResetCode(models.Model):
     code = models.CharField(max_length=6)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    @classmethod
-    def delete_code(cls, code):
-        cls.objects.filter(code=code).delete()
-
     def is_expired(self):
         expiration_time = timezone.now() - timezone.timedelta(minutes=2)
         return self.created_at < expiration_time

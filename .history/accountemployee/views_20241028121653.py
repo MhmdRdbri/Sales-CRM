@@ -71,34 +71,3 @@ class CreateUserView(APIView):
             return Response({"message": "User created successfully.", "user_id": user.id}, status=status.HTTP_201_CREATED)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-class PasswordResetRequestView(APIView):
-    permission_classes = [AllowAny]
-    serializer_class = PasswordResetRequestSerializer
-    def post(self, request):
-        serializer = PasswordResetRequestSerializer(data=request.data)
-        if serializer.is_valid():
-            code = serializer.create_reset_code()
-            print(code)
-            return Response({"detail": "Password reset code sent."}, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-class AuthenticatedPasswordResetRequestView(APIView):
-    serializer_class = AuthenticatedPasswordResetRequestSerializer
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-        serializer = AuthenticatedPasswordResetRequestSerializer()
-        code = serializer.create_reset_code(request.user)
-        print(code)
-        return Response({"detail": "Password reset code sent to your registered phone number."}, status=status.HTTP_200_OK)
-
-class PasswordResetView(APIView):
-    permission_classes = [AllowAny]
-    serializer_class = PasswordResetSerializer
-    def post(self, request):
-        serializer = PasswordResetSerializer(data=request.data, context={'user': request.user if request.user.is_authenticated else None})
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"detail": "Password reset successful."}, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

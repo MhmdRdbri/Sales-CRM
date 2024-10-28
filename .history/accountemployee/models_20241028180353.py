@@ -62,8 +62,8 @@ class PasswordResetCode(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     @classmethod
-    def delete_code(cls, code):
-        cls.objects.filter(code=code).delete()
+    def delete_code(cls, token):
+        cls.objects.filter(token=token).delete()
 
     def is_expired(self):
         expiration_time = timezone.now() - timezone.timedelta(minutes=2)
