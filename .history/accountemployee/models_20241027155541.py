@@ -2,26 +2,24 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.db import models
 from django.utils import timezone
 import random
+import asyncio
+import http.client
+import json
 
 class CustomUserManager(BaseUserManager):
-    def create_user(self, phone_number, full_name, password=None, **extra_fields):
+    def create_user(self, phone_number, password=None, **extra_fields):
         if not phone_number:
             raise ValueError('The Phone Number field must be set')
-        if not full_name:
-            raise ValueError('The Full Name field must be set')
-        user = self.model(phone_number=phone_number, full_name=full_name, **extra_fields)
+        user = self.model(phone_number=phone_number, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
-
-        Profile.objects.create(user=user, full_name=full_name)
-
         return user
 
-    def create_superuser(self, phone_number, full_name, password=None, **extra_fields):
+    def create_superuser(self, phone_number, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
 
-        return self.create_user(phone_number, full_name, password, **extra_fields)
+        return self.create_user(phone_number, password, **extra_fields)
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     phone_number = models.CharField(unique=True, max_length=15)
@@ -34,11 +32,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'phone_number'
-    REQUIRED_FIELDS = ['full_name']
 
     groups = models.ManyToManyField(
         'auth.Group',
-        related_name='customuser_set',
+        related_name='customuser_set',  # Changed related name
         blank=True,
         help_text='The groups this user belongs to. A user will get all permissions '
                   'granted to each of their groups.',
@@ -47,7 +44,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     
     user_permissions = models.ManyToManyField(
         'auth.Permission',
-        related_name='customuser_set',
+        related_name='customuser_set',  # Changed related name
         blank=True,
         help_text='Specific permissions for this user.',
         verbose_name='user permissions',
@@ -55,6 +52,13 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.phone_number
+        
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)  # Call the original save method
+        if not hasattr(self, 'profile'):
+            Profile.objects.create(user=self)
+
+
 
 class PasswordResetToken(models.Model):
     user = models.ForeignKey('CustomUser', on_delete=models.CASCADE)
@@ -86,11 +90,12 @@ class Profile(models.Model):
         ('accountant', 'حسابدار'),
         ('regular', 'عادی'),
     ]
-    work_position = models.CharField(max_length=20, choices=WORK_POSITION_CHOICES, default='regular')
+    work_position = models.CharField(max_length=20, choices=WORK_POSITION_CHOICES)
     department = models.CharField(max_length=255, blank=True, null=True)
     telegram_id = models.CharField(max_length=255, blank=True, null=True) 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
 
     def save(self, *args, **kwargs):
         if not self.phone_number:

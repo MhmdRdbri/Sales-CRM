@@ -86,7 +86,7 @@ class Profile(models.Model):
         ('accountant', 'حسابدار'),
         ('regular', 'عادی'),
     ]
-    work_position = models.CharField(max_length=20, choices=WORK_POSITION_CHOICES, default='regular')
+    work_position = models.CharField(max_length=20, choices=WORK_POSITION_CHOICES)
     department = models.CharField(max_length=255, blank=True, null=True)
     telegram_id = models.CharField(max_length=255, blank=True, null=True) 
     created_at = models.DateTimeField(auto_now_add=True)

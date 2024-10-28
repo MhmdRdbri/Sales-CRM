@@ -50,14 +50,8 @@ ROOT_URLCONF = 'salescrm.urls'
 AUTH_USER_MODEL = 'accountemployee.CustomUser'
 
 REST_FRAMEWORK = {
+    # YOUR SETTINGS
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-}
-
-SPECTACULAR_SETTINGS = {
-    'TITLE': 'SalesCRM API',
-    'DESCRIPTION': 'CRM',
-    'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': False,
 }
 
 TEMPLATES = [
