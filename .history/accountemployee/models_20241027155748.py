@@ -13,6 +13,7 @@ class CustomUserManager(BaseUserManager):
         user.set_password(password)
         user.save(using=self._db)
 
+        # Create the Profile with the full_name
         Profile.objects.create(user=user, full_name=full_name)
 
         return user
@@ -34,7 +35,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'phone_number'
-    REQUIRED_FIELDS = ['full_name']
+    REQUIRED_FIELDS = ['full_name']  # Make sure full_name is required
 
     groups = models.ManyToManyField(
         'auth.Group',
@@ -86,7 +87,7 @@ class Profile(models.Model):
         ('accountant', 'حسابدار'),
         ('regular', 'عادی'),
     ]
-    work_position = models.CharField(max_length=20, choices=WORK_POSITION_CHOICES, default='regular')
+    work_position = models.CharField(max_length=20, choices=WORK_POSITION_CHOICES)
     department = models.CharField(max_length=255, blank=True, null=True)
     telegram_id = models.CharField(max_length=255, blank=True, null=True) 
     created_at = models.DateTimeField(auto_now_add=True)

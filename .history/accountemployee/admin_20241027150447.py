@@ -24,12 +24,6 @@ class CustomUserAdmin(admin.ModelAdmin):
         }),
     )
     filter_horizontal = ('groups', 'user_permissions')
-    list_select_related = ('profile',)
-    def save_model(self, request, obj, form, change):
-        super().save_model(request, obj, form, change)
-        profile_data = form.cleaned_data.get('profile')
-        if profile_data:
-            Profile.objects.update_or_create(user=obj, defaults=profile_data)
 
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'work_position', 'department', 'telegram_id', 'created_at')
