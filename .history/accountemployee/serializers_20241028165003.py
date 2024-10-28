@@ -39,12 +39,12 @@ class PasswordResetRequestSerializer(serializers.Serializer):
     phone_number = serializers.CharField(max_length=15)
 
     def validate_phone_number(self, value):
-        if not CustomUser.objects.filter(phone_number=value).exists():
+        if not User.objects.filter(phone_number=value).exists():
             raise serializers.ValidationError("User with this phone number does not exist.")
         return value
 
     def create_reset_code(self):
-        user = CustomUser.objects.get(phone_number=self.validated_data['phone_number'])
+        user = User.objects.get(phone_number=self.validated_data['phone_number'])
         code = random.randint(100000, 999999)
         PasswordResetCode.objects.create(user=user, code=str(code))
         return code
@@ -66,7 +66,7 @@ class PasswordResetSerializer(serializers.Serializer):
         
         if not user and phone_number:
             try:
-                user = CustomUser.objects.get(phone_number=phone_number)
+                user = User.objects.get(phone_number=phone_number)
             except User.DoesNotExist:
                 raise serializers.ValidationError("User with this phone number does not exist.")
         

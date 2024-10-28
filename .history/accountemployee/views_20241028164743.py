@@ -73,18 +73,16 @@ class CreateUserView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class PasswordResetRequestView(APIView):
-    permission_classes = [AllowAny]
-    serializer_class = PasswordResetRequestSerializer
     def post(self, request):
         serializer = PasswordResetRequestSerializer(data=request.data)
         if serializer.is_valid():
             code = serializer.create_reset_code()
-            print(code)
+            # Replace this with SMS code sending
+            send_mail('Your Password Reset Code', f'Your code is: {code}', 'noreply@yourdomain.com', [serializer.validated_data['phone_number']])
             return Response({"detail": "Password reset code sent."}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class AuthenticatedPasswordResetRequestView(APIView):
-    serializer_class = AuthenticatedPasswordResetRequestSerializer
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
@@ -94,9 +92,8 @@ class AuthenticatedPasswordResetRequestView(APIView):
         return Response({"detail": "Password reset code sent to your registered phone number."}, status=status.HTTP_200_OK)
 
 class PasswordResetView(APIView):
-    permission_classes = [AllowAny]
-    serializer_class = PasswordResetSerializer
     def post(self, request):
+        # Include `user` in the context to skip phone_number check for authenticated users
         serializer = PasswordResetSerializer(data=request.data, context={'user': request.user if request.user.is_authenticated else None})
         if serializer.is_valid():
             serializer.save()

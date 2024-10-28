@@ -94,7 +94,6 @@ class AuthenticatedPasswordResetRequestView(APIView):
         return Response({"detail": "Password reset code sent to your registered phone number."}, status=status.HTTP_200_OK)
 
 class PasswordResetView(APIView):
-    permission_classes = [AllowAny]
     serializer_class = PasswordResetSerializer
     def post(self, request):
         serializer = PasswordResetSerializer(data=request.data, context={'user': request.user if request.user.is_authenticated else None})

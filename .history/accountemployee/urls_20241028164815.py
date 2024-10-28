@@ -9,4 +9,4 @@ urlpatterns = [
     path('password-reset/request/', PasswordResetRequestView.as_view(), name='password-reset-request'),
     path('password-reset/request-authenticated/', AuthenticatedPasswordResetRequestView.as_view(), name='password-reset-request-authenticated'),
     path('password-reset/', PasswordResetView.as_view(), name='password-reset'),
-]
+    ]

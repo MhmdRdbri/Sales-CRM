@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import *
+from .models import CustomUser, Profile, PasswordResetToken
 
 class CustomUserAdmin(admin.ModelAdmin):
     list_display = ('full_name', 'phone_number', 'email', 'is_active', 'is_staff', 'date_joined')
@@ -46,3 +46,4 @@ class PasswordResetCodeAdmin(admin.ModelAdmin):
 # Register models with the admin site
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Profile, ProfileAdmin)
+admin.site.register(PasswordResetToken, PasswordResetTokenAdmin)

@@ -46,3 +46,4 @@ class PasswordResetCodeAdmin(admin.ModelAdmin):
 # Register models with the admin site
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Profile, ProfileAdmin)
+admin.site.register(PasswordResetToken, PasswordResetTokenAdmin)
