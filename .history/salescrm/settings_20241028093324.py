@@ -50,12 +50,6 @@ ROOT_URLCONF = 'salescrm.urls'
 AUTH_USER_MODEL = 'accountemployee.CustomUser'
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
-    ],
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
@@ -63,7 +57,7 @@ SPECTACULAR_SETTINGS = {
     'TITLE': 'SalesCRM API',
     'DESCRIPTION': 'CRM',
     'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': True,
+    'SERVE_INCLUDE_SCHEMA': False,
 }
 
 TEMPLATES = [

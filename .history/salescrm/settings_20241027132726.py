@@ -17,13 +17,12 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
 # Application definition
 
 INSTALLED_APPS = [
-    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',                       
+    'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
@@ -33,7 +32,7 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'django_celery_results',
     'channels',
-    'accountemployee'
+    'account_employee',
 ]
 
 MIDDLEWARE = [
@@ -47,24 +46,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'salescrm.urls'
-AUTH_USER_MODEL = 'accountemployee.CustomUser'
-
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
-    ],
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-}
-
-SPECTACULAR_SETTINGS = {
-    'TITLE': 'SalesCRM API',
-    'DESCRIPTION': 'CRM',
-    'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': True,
-}
 
 TEMPLATES = [
     {
@@ -99,6 +80,9 @@ DATABASES = {
         "PORT": "5432",
     }
 }
+
+AUTH_USER_MODEL = 'account.CustomUser'
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
