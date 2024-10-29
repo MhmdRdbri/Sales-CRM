@@ -23,7 +23,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',                       
+    'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
@@ -33,9 +33,7 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'django_celery_results',
     'channels',
-    'products.apps.ProductsConfig'
     'accountemployee'
-
 ]
 
 MIDDLEWARE = [
@@ -51,22 +49,6 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'salescrm.urls'
 AUTH_USER_MODEL = 'accountemployee.CustomUser'
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
-    ],
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-}
-
-SPECTACULAR_SETTINGS = {
-    'TITLE': 'SalesCRM API',
-    'DESCRIPTION': 'CRM',
-    'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': True,
-}
 
 TEMPLATES = [
     {
@@ -135,8 +117,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+
 STATIC_URL = 'static/'
 
 # Default primary key field type
