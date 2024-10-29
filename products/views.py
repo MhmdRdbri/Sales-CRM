@@ -76,14 +76,31 @@ class ProductRetrieveUpdateDeleteView(APIView):
                 return Response(data=response,status=status.HTTP_200_OK)
             
             return Response(data=serializer.errors,status=status.HTTP_400_BAD_REQUEST) 
-            
-       
+        
+    
        def delete(self,request:Request,product_id=int):
            product = get_object_or_404(Product,pk=product_id)
            
            product.delete()
            
            return Response(status=status.HTTP_204_NO_CONTENT)
+       
+       
+       def patch(self, request: Request, product_id: int):
+            product = get_object_or_404(Product, pk=product_id)
+            data = request.data
+            serializer = self.serializer_class(instance=product, data=data, partial=True)
+            
+            if serializer.is_valid():
+                serializer.save()
+                response = {
+                    "message": "product partially updated",
+                    "data": serializer.data
+                }
+                return Response(data=response, status=status.HTTP_200_OK)
+            
+            return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
        
        
        
@@ -162,4 +179,22 @@ class CategoryRetrieveUpdateDeleteView(APIView):
            product.delete()
            
            return Response(status=status.HTTP_204_NO_CONTENT)
+       
+       
+       
+       def patch(self, request: Request, category_id: int):
+            product = get_object_or_404(Category, pk=category_id)
+            data = request.data
+            serializer = self.serializer_class(instance=product, data=data, partial=True)
+            
+            if serializer.is_valid():
+                serializer.save()
+                response = {
+                    "message": "category partially updated",
+                    "data": serializer.data
+                }
+                return Response(data=response, status=status.HTTP_200_OK)
+            
+            return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
  
