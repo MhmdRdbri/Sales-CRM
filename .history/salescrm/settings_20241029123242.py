@@ -34,8 +34,7 @@ INSTALLED_APPS = [
     'django_celery_results',
     'channels',
     'products.apps.ProductsConfig',
-    'accountemployee',
-    'customerprofile',
+    'accountemployee'
 
 ]
 
