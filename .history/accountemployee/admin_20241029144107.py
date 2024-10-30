@@ -31,7 +31,11 @@ class CustomUserAdmin(admin.ModelAdmin):
         if profile_data:
             Profile.objects.update_or_create(user=obj, defaults=profile_data)
 
-
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'work_position', 'department', 'telegram_id', 'created_at')
+    search_fields = ('user__full_name', 'work_position', 'department')
+    list_filter = ('work_position', 'department', 'created_at')
+    ordering = ('-created_at',)
 
 @admin.register(PasswordResetCode)
 class PasswordResetCodeAdmin(admin.ModelAdmin):
@@ -41,10 +45,7 @@ class PasswordResetCodeAdmin(admin.ModelAdmin):
 
 # Register models with the admin site
 admin.site.register(CustomUser, CustomUserAdmin)
-
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'work_position', 'department', 'telegram_id', 'created_at', 'date_of_assignment')
-    search_fields = ('user__full_name', 'work_position', 'department')
-    list_filter = ('work_position', 'department', 'created_at')
-    ordering = ('-created_at',)
+    list_display = ['full_name', 'phone_number', 'email', 'work_position', 'user']
+    search_fields = ['full_name', 'phone_number', 'user__phone_number']
