@@ -22,7 +22,6 @@ import asyncio
 from telegram import Bot
 from drf_spectacular.utils import extend_schema
 from rest_framework import generics, permissions
-from rest_framework.exceptions import PermissionDenied
 
 class CustomUserLoginAPIView(APIView):
     permission_classes = [AllowAny]
@@ -110,6 +109,9 @@ class ProfileListView(generics.ListAPIView):
     serializer_class = ProfileSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    def get_queryset(self):
+        return self.queryset
+
 class ProfileDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
@@ -117,15 +119,7 @@ class ProfileDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_object(self):
         profile = super().get_object()
-        if self.request.method in ['PUT', 'PATCH', 'DELETE']:
-            if profile.user != self.request.user and self.request.user.profile.work_position != 'admin':
-                raise PermissionDenied("You do not have permission to edit or delete this profile.")
-        return profile
-
-    def perform_update(self, serializer):
+        # Restrict edit/delete access based on user's work position
         if self.request.user.profile.work_position != 'admin':
-            restricted_fields = ['work_position', 'department', 'date_of_assignment']
-            for field in restricted_fields:
-                serializer.validated_data.pop(field, None)
-        
-        serializer.save()
+            raise permissions.PermissionDenied("You do not have permission to edit or delete this profile.")
+        return profile

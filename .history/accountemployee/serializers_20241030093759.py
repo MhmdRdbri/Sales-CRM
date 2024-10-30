@@ -86,5 +86,5 @@ class PasswordResetSerializer(serializers.Serializer):
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = '__all__'
+        fields = ['user', 'work_position', 'department', 'date_of_assignment', 'other_fields']
         read_only_fields = ['work_position', 'department', 'date_of_assignment']
