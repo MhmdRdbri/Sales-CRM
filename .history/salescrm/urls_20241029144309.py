@@ -4,10 +4,8 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, Spec
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accountemployee/', include('accountemployee.urls', namespace='accountemployee')),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
-    path('accountemployee/', include('accountemployee.urls', namespace='accountemployee')),
-    path('products/', include('products.urls', namespace='products')),
-    path('customerprofile/', include('customerprofile.urls', namespace='customerprofile')),
     path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 ]

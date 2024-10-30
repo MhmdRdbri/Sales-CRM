@@ -44,7 +44,7 @@ admin.site.register(CustomUser, CustomUserAdmin)
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'work_position', 'department', 'telegram_id', 'created_at', 'date_of_assignment')
+    list_display = ('user', 'work_position', 'department', 'telegram_id', 'created_at')
     search_fields = ('user__full_name', 'work_position', 'department')
     list_filter = ('work_position', 'department', 'created_at')
-    ordering = ('-created_at',)
+    ordering = ('-created_at',)]
