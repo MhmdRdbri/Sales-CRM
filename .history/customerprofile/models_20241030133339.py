@@ -11,7 +11,8 @@ class CustomerProfile(models.Model):
         (SILVER, 'Silver'),
         (GOLD, 'Gold'),
     ]
-
+    
+    id = models.BigAutoField(primary_key=True)
     full_name = models.CharField(max_length=255)
     phone_number = models.BigIntegerField()
     date_of_birth = models.DateField(null=True, blank=True)
@@ -25,8 +26,13 @@ class CustomerProfile(models.Model):
         null=True,
         blank=True
     )
-    factors = models.CharField(max_length=255, null=True, blank=True)
-    customer_picture = models.ImageField(upload_to='customer_profile_pictures/', null=True, blank=True)
+    contracts = models.ForeignKey(
+        'contract.Contract',  # Referencing the future model as 'app_name.ModelName'
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+    picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
 
     def __str__(self):
         return self.full_name
