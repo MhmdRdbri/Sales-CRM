@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     'products.apps.ProductsConfig',
     'accountemployee',
     'customerprofile',
-    'salesopportunities',
+    'salesopportunities'
 ]
 
 MIDDLEWARE = [
