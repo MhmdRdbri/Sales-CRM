@@ -12,13 +12,13 @@ class SalesOpportunity(models.Model):
         ('mid_priority', 'mid_priority'),
         ('high_priority', 'high_priority'),
     ]
-    opportunity_priority = models.CharField(max_length=255, choices=OPPORTUNITY_PRIORITY_CHOICES)
+    opportunity_priority = models.CharField(max_length=10, choices=OPPORTUNITY_PRIORITY_CHOICES)
     
     selected_products = models.ManyToManyField(Product, related_name='sales_opportunities')
     description = models.TextField(blank=True, null=True)
     created_at = models.DateField(auto_now_add=True)
     
-    profile = models.ForeignKey(CustomerProfile, on_delete=models.CASCADE, related_name='sales_opportunities')
+    profile = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name='sales_opportunities')
 
     def __str__(self):
         return f"Opportunity {self.id} - Priority: {self.opportunity_priority}"
