@@ -5,11 +5,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
-# SECRET_KEY = 'django-insecure-icig@9o$jv=+6&i6m69asig*76z(259k5rpcvyu7rk)j)+)hj+'
+SECRET_KEY = 'django-insecure-icig@9o$jv=+6&i6m69asig*76z(259k5rpcvyu7rk)j)+)hj+'
 
-SECRET_KEY = env("SECRET_KEY")
+#SECRET_KEY = env("SECRET_KEY")
 print("SECRET_KEY from .env:", env("SECRET_KEY", default="Not found"))
-DEBUG = env.bool('DEBUG', default=False)
+DEBUG = env.bool('DEBUG', default=True)
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
 
@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'products.apps.ProductsConfig',
     'accountemployee',
     'customerprofile',
+    'factors',
 
 ]
 
