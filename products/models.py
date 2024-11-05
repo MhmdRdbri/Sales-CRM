@@ -21,6 +21,6 @@ class Product(models.Model):
     
     
     def __str__(self):
-        return self.project_name
+        return self.product_name
 
 

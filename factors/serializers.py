@@ -12,7 +12,7 @@ class FactorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Factors
-        fields = ['id', 'conttract_date', 'price', 'description', 'costumer', 'products']
+        fields = ['id', 'contract_date', 'price', 'description', 'costumer', 'products']
 
     def validate_products(self, value):
         # Ensure that each product_id exists
