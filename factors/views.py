@@ -13,12 +13,18 @@ class FactorList(generics.ListCreateAPIView):
     queryset = Factors.objects.all()
     serializer_class = FactorSerializer
     permission_classes = [IsAuthenticated]
+    
+    
 
     def get(self, request, *args, **kwargs):
+        if self.request.user.profile.work_position != 'accountant' and self.request.user.profile.work_position != 'admin':
+            raise PermissionDenied("You do not have permission get factors.")
         
         return self.list(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
+        if self.request.user.profile.work_position != 'accountant' and self.request.user.profile.work_position != 'admin':
+            raise PermissionDenied("You do not have permission post any factors.")
         
         return self.create(request, *args, **kwargs)
 
@@ -31,14 +37,19 @@ class FactorDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
+        if self.request.user.profile.work_position != 'accountant' and self.request.user.profile.work_position != 'admin':
+            raise PermissionDenied("You do not have permission get this factor.")
         
         return self.retrieve(request, *args, **kwargs)
 
     def put(self, request, *args, **kwargs):
-        
+        if self.request.user.profile.work_position != 'accountant' and self.request.user.profile.work_position != 'admin':
+            raise PermissionDenied("You do not have permission put change this factor.")
         return self.update(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
+        if self.request.user.profile.work_position != 'accountant' and self.request.user.profile.work_position != 'admin':
+            raise PermissionDenied("You do not have permission delete this factor.")
         
         return self.destroy(request, *args, **kwargs)
 
