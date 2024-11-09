@@ -59,15 +59,15 @@ packaging==24.1
 pillow==10.4.0
 prompt_toolkit==3.0.47
 psutil==6.0.0
-# psycopg==3.2.1
-# psycopg2==2.9.9
-psycopg2-binary==2.9.9
+psycopg==3.2.1
+psycopg2==2.9.9
 pycparser==2.22
 PyJWT==2.8.0
 python-crontab==3.2.0
 python-dateutil==2.9.0.post0
 python-git==2018.2.1
 python-telegram-bot==21.4
+pywin32==308
 PyYAML==6.0.1
 pyzmq==26.1.0
 redis==5.2.0

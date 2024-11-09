@@ -59,9 +59,8 @@ packaging==24.1
 pillow==10.4.0
 prompt_toolkit==3.0.47
 psutil==6.0.0
-# psycopg==3.2.1
-# psycopg2==2.9.9
-psycopg2-binary==2.9.9
+psycopg==3.2.1
+psycopg2==2.9.9
 pycparser==2.22
 PyJWT==2.8.0
 python-crontab==3.2.0

@@ -11,7 +11,8 @@ urlpatterns = [
     path('accountemployee/', include('accountemployee.urls', namespace='accountemployee')),
     path('products/', include('products.urls', namespace='products')),
     path('customerprofile/', include('customerprofile.urls', namespace='customerprofile')),
-    path('salesopportunities/', include('salesopportunities.urls', namespace='salesopportunities')), 
+    path('salesopportunities/', include('salesopportunities.urls', namespace='salesopportunities')),
+    path('customerprofile/', include('customerprofile.urls', namespace='customerprofile')),  
     path('factors/', include('factors.urls', namespace='factors')),
     path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
