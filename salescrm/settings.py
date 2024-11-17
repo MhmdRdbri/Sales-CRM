@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'customerprofile',
     'factors',
     'salesopportunities',
+    'marketing',
 
 ]
 
