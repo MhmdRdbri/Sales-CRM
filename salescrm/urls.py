@@ -14,5 +14,6 @@ urlpatterns = [
     path('salesopportunities/', include('salesopportunities.urls', namespace='salesopportunities')), 
     path('factors/', include('factors.urls', namespace='factors')),
     path('marketing/', include('marketing.urls', namespace='marketing')),
+    path('notice/', include('notice.urls', namespace='notice')),
     path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
