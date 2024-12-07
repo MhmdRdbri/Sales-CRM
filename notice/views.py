@@ -6,8 +6,11 @@ from rest_framework.permissions import *
 from rest_framework.exceptions import PermissionDenied
 from datetime import datetime
 from .tasks import send_notice_sms
-from django.utils.timezone import make_aware , now
-from datetime import datetime
+from django.utils.timezone import make_aware , now, timezone
+from celery import current_app
+
+
+
 
 
 
@@ -27,30 +30,23 @@ class NoticeList(generics.ListCreateAPIView):
             raise PermissionDenied("You do not have permission post any notice.")
         
         return self.create(request, *args, **kwargs)
-    
+
     def perform_create(self, serializer):
-        print("Perform_create method triggered")  # Debug statement
         notice = serializer.save()
-        print(f"Notice created with ID: {notice.id}")  # Debug statement
 
         # Combine date and time
         send_datetime = datetime.combine(notice.send_date, notice.send_time)
         if not send_datetime.tzinfo:
-            send_datetime = make_aware(send_datetime)  # Ensure timezone-awareness
+            send_datetime = make_aware(send_datetime)
 
-        # Get current time in UTC
-        current_time = now()  # Django's timezone-aware now()
-
-        print(f"send_datetime: {send_datetime}, current_time: {current_time}")  # Debug statement
-
-        # Check if the send time is in the past
-        if send_datetime < current_time:
-            print("Invalid send_datetime: Task cannot be scheduled in the past.")  # Debug statement
+        if send_datetime < now():
             raise PermissionDenied("Cannot schedule SMS for a past date or time.")
 
-        # Schedule the SMS task with Celery
+        # Schedule the SMS task and save the task ID
         task = send_notice_sms.apply_async((notice.id,), eta=send_datetime)
-        print(f"Task scheduled with ID: {task.id} at {send_datetime}")
+        notice.task_id = task.id
+        notice.save()  # Save the task ID in the database
+
 
 
 
@@ -63,20 +59,54 @@ class NoticeDetail(generics.RetrieveUpdateDestroyAPIView):
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
 
+    
     def put(self, request, *args, **kwargs):
         notice = self.get_object()
+
+        # Permission check
+        if self.request.user.profile.work_position not in ['system_manager', 'admin']:
+            raise PermissionDenied("You do not have permission to update this notice.")
+
+        # Revoke the old task if it exists
+        if notice.task_id:
+            current_app.control.revoke(notice.task_id, terminate=True)
+            print(f"Revoked old task with ID: {notice.task_id}")
+
+        # Combine date and time to form send_datetime
         send_datetime = datetime.combine(notice.send_date, notice.send_time)
-        
-        if now() > send_datetime:
-            raise PermissionDenied("You cannot modify a notice that has already been sent.")
-        
-        if self.request.user.profile.work_position != 'system_manager' and self.request.user.profile.work_position != 'admin':
-            raise PermissionDenied("You do not have permission put change this notice.")
-        return self.update(request, *args, **kwargs)
 
+        # Make sure send_datetime is timezone-aware in UTC
+        if not send_datetime.tzinfo:
+            send_datetime = make_aware(send_datetime, timezone=timezone.utc)  # Use timezone.utc here
+
+        # Get the current time in UTC
+        current_time = now()  # This will be in UTC if your settings use USE_TZ=True
+
+        # Compare the times in UTC
+        if send_datetime < current_time:
+            raise PermissionDenied("Cannot schedule SMS for a past date or time.")
+
+        # Update the notice and schedule a new task
+        response = self.update(request, *args, **kwargs)
+
+        task = send_notice_sms.apply_async((notice.id,), eta=send_datetime)
+        notice.task_id = task.id
+        notice.save()
+
+        print(f"Scheduled new task with ID: {task.id} for notice ID: {notice.id}")
+        return response
+    
+    
     def delete(self, request, *args, **kwargs):
-        if self.request.user.profile.work_position != 'system_manager' and self.request.user.profile.work_position != 'admin':
-            raise PermissionDenied("You do not have permission delete this  notice.")
-        
-        return self.destroy(request, *args, **kwargs)
+        notice = self.get_object()
 
+        # Permission check
+        if self.request.user.profile.work_position not in ['system_manager', 'admin']:
+            raise PermissionDenied("You do not have permission to delete this notice.")
+
+        # Revoke the task if it exists
+        if notice.task_id:
+            current_app.control.revoke(notice.task_id, terminate=True)
+            print(f"Revoked task with ID: {notice.task_id}")
+
+        return self.destroy(request, *args, **kwargs)

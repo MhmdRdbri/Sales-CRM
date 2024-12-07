@@ -9,6 +9,7 @@ class Notice(models.Model):
     send_time = models.TimeField(null=False,blank=False)
     send_date = models.DateField(null=False,blank=False)    
     audiences = models.ManyToManyField(CustomerProfile,related_name="notice",blank=True)
+    task_id = models.CharField(max_length=255, blank=True, null=True) 
     
     def __str__(self):
         return self.title
