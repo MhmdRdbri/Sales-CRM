@@ -1,0 +1,5 @@
+{
+    "django": {
+      "settingsFile": "./salescrm/settings.py"
+    }
+  }
