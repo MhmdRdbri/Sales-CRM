@@ -17,7 +17,7 @@ class SalesOpportunity(models.Model):
     description = models.TextField(blank=True, null=True)
     created_at = models.DateField(auto_now_add=True)
 
-    profile = models.ForeignKey(CustomerProfile, on_delete=models.CASCADE, related_name='sales_opportunities')
+    profile = models.ForeignKey(CustomerProfile, on_delete=models.SET_NULL, related_name='sales_opportunities')
 
     def __str__(self):
         return f"Opportunity {self.id} - Priority: {self.opportunity_priority}"
