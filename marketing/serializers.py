@@ -4,7 +4,7 @@ from django.utils.timezone import now, make_aware
 from datetime import datetime
 
 class MarketingSerializer(serializers.ModelSerializer):
-    status = serializers.CharField(read_only=True)
+    
     
     class Meta:
         model = Marketing
