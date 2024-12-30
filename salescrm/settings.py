@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'salesopportunities',
     'marketing',
     'notice',
+    "dashboard",
 
 ]
 
