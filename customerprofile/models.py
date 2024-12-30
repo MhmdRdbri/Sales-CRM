@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 
 class CustomerProfile(models.Model):
@@ -18,6 +19,7 @@ class CustomerProfile(models.Model):
     email = models.CharField(max_length=255, null=True, blank=True)
     telegram_id = models.CharField(max_length=255, null=True, blank=True)
     national_id = models.BigIntegerField(null=True, blank=True)
+    created_at = models.DateTimeField(default=timezone.now)
     instagram_id = models.CharField(max_length=255, null=True, blank=True)
     buyer_rank = models.CharField(
         max_length=2,
