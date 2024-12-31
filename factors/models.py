@@ -8,6 +8,7 @@ class Factors(models.Model):
     price = models.IntegerField()
     description = models.TextField()
     costumer = models.ForeignKey(CustomerProfile, related_name='factor', on_delete=models.SET_NULL,null=True)
+    files = models.JSONField(default=list, blank=True)
     
     def __str__(self):
         return f"Factor #{self.id} - {self.contract_date}"
