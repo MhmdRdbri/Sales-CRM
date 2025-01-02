@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import authenticate
 from .models import *
+from .utils import *
 
 class CustomUserLoginSerializer(serializers.Serializer):
     phone_number = serializers.CharField()
@@ -39,20 +40,25 @@ class PasswordResetRequestSerializer(serializers.Serializer):
     phone_number = serializers.CharField(max_length=15)
 
     def validate_phone_number(self, value):
-        if not User.objects.filter(phone_number=value).exists():
+        if not CustomUser.objects.filter(phone_number=value).exists():
             raise serializers.ValidationError("User with this phone number does not exist.")
         return value
 
     def create_reset_code(self):
-        user = User.objects.get(phone_number=self.validated_data['phone_number'])
+        user = CustomUser.objects.get(phone_number=self.validated_data['phone_number'])
         code = random.randint(100000, 999999)
         PasswordResetCode.objects.create(user=user, code=str(code))
+        to = [self.validated_data['phone_number'],]
+        message = str(code)
+        send_sms(to,message) 
         return code
 
 class AuthenticatedPasswordResetRequestSerializer(serializers.Serializer):
     def create_reset_code(self, user):
         code = random.randint(100000, 999999)
         PasswordResetCode.objects.create(user=user, code=str(code))
+        to = [user.profile.phone_number,]
+        send_sms(to,str(code))
         return code
 
 class PasswordResetSerializer(serializers.Serializer):
@@ -66,8 +72,8 @@ class PasswordResetSerializer(serializers.Serializer):
         
         if not user and phone_number:
             try:
-                user = User.objects.get(phone_number=phone_number)
-            except User.DoesNotExist:
+                user = CustomUser.objects.get(phone_number=phone_number)
+            except user.DoesNotExist:
                 raise serializers.ValidationError("User with this phone number does not exist.")
         
         reset_code = PasswordResetCode.objects.filter(user=user, code=data['code']).last()
@@ -82,3 +88,9 @@ class PasswordResetSerializer(serializers.Serializer):
         user.set_password(self.validated_data['new_password'])
         user.save()
         PasswordResetCode.objects.filter(user=user).delete()
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = '__all__'
+        read_only_fields = ['work_position', 'department', 'date_of_assignment']

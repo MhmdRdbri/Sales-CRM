@@ -8,6 +8,7 @@ from .models import *
 from django.urls import reverse
 from django.conf import settings
 from .serializers import *
+from .utils import send_sms
 import http.client
 import json
 from django.contrib.auth.models import User
@@ -42,11 +43,11 @@ class CustomUserLoginAPIView(APIView):
             if work_position == 'admin':
                 role = 'admin'
             elif work_position == 'system_manager':
-                role = 'manager'
+                role = 'system_manager'
             elif work_position == 'accountant':
                 role = 'accountant'
             else:
-                role = 'employee'
+                role = 'regular'
 
             access['role'] = role
 
@@ -82,6 +83,8 @@ class PasswordResetRequestView(APIView):
         if serializer.is_valid():
             code = serializer.create_reset_code()
             print(code)
+            to = [serializer.validated_data['phone_number'],]
+            print(to)      
             return Response({"detail": "Password reset code sent."}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -93,6 +96,9 @@ class AuthenticatedPasswordResetRequestView(APIView):
         serializer = AuthenticatedPasswordResetRequestSerializer()
         code = serializer.create_reset_code(request.user)
         print(code)
+        to = [request.user.profile.phone_number,]
+        print(to)
+
         return Response({"detail": "Password reset code sent to your registered phone number."}, status=status.HTTP_200_OK)
 
 class PasswordResetView(APIView):
@@ -116,8 +122,16 @@ class ProfileDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self):
-        profile = super().get_object()  # Get the profile instance
-        # Allow only admin users to edit or delete profiles
-        if self.request.method in ['PUT', 'PATCH', 'DELETE'] and self.request.user.profile.work_position != 'admin':
-            raise PermissionDenied("You do not have permission to edit or delete this profile.")
+        profile = super().get_object()
+        if self.request.method in ['PUT', 'PATCH', 'DELETE']:
+            if profile.user != self.request.user and self.request.user.profile.work_position != 'admin':
+                raise PermissionDenied("You do not have permission to edit or delete this profile.")
         return profile
+
+    def perform_update(self, serializer):
+        if self.request.user.profile.work_position != 'admin':
+            restricted_fields = ['work_position', 'department', 'date_of_assignment']
+            for field in restricted_fields:
+                serializer.validated_data.pop(field, None)
+        
+        serializer.save()

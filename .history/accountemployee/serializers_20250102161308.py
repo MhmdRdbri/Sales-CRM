@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import authenticate
 from .models import *
+from .utils import *
 
 class CustomUserLoginSerializer(serializers.Serializer):
     phone_number = serializers.CharField()
@@ -22,17 +23,21 @@ class CustomUserLoginSerializer(serializers.Serializer):
 
 class UserCreateSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
+    profile = serializers.JSONField(write_only=True)  # Add profile as a nested field
 
     class Meta:
         model = CustomUser
-        fields = ('phone_number', 'full_name', 'email', 'password')
+        fields = ('phone_number', 'full_name', 'email', 'password', 'profile')
 
     def create(self, validated_data):
+        profile_data = validated_data.pop('profile', {})
         password = validated_data.pop('password')
         user = CustomUser.objects.create(**validated_data)
         user.set_password(password)
         user.save()
-        Profile.objects.create(user=user, full_name=validated_data.get('full_name'))
+
+        Profile.objects.create(user=user, **profile_data)
+        
         return user
 
 class PasswordResetRequestSerializer(serializers.Serializer):
@@ -47,12 +52,17 @@ class PasswordResetRequestSerializer(serializers.Serializer):
         user = CustomUser.objects.get(phone_number=self.validated_data['phone_number'])
         code = random.randint(100000, 999999)
         PasswordResetCode.objects.create(user=user, code=str(code))
+        to = [self.validated_data['phone_number'],]
+        message = str(code)
+        send_sms(to,message) 
         return code
 
 class AuthenticatedPasswordResetRequestSerializer(serializers.Serializer):
     def create_reset_code(self, user):
         code = random.randint(100000, 999999)
         PasswordResetCode.objects.create(user=user, code=str(code))
+        to = [user.profile.phone_number,]
+        send_sms(to,str(code))
         return code
 
 class PasswordResetSerializer(serializers.Serializer):
@@ -67,7 +77,7 @@ class PasswordResetSerializer(serializers.Serializer):
         if not user and phone_number:
             try:
                 user = CustomUser.objects.get(phone_number=phone_number)
-            except User.DoesNotExist:
+            except user.DoesNotExist:
                 raise serializers.ValidationError("User with this phone number does not exist.")
         
         reset_code = PasswordResetCode.objects.filter(user=user, code=data['code']).last()
