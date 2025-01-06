@@ -64,6 +64,7 @@ class CreateUserView(APIView):
     serializer_class = UserCreateSerializer
 
     def post(self, request, *args, **kwargs):
+        # Check if the requesting user has admin rights
         if request.user.profile.work_position != 'admin':
             return Response({"error": "Only admin users can create new users."},
                             status=status.HTTP_403_FORBIDDEN)
