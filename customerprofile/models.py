@@ -24,7 +24,7 @@ class CustomerProfile(models.Model):
     buyer_rank = models.CharField(
         max_length=2,
         choices=BUYER_RANK_CHOICES,
-        null=True,
+        default=BRONZE,
         blank=True
     )
     customer_picture = models.ImageField(upload_to='customer_profile_pictures/', null=True, blank=True)
