@@ -5,6 +5,7 @@ from datetime import datetime
 
 class MarketingSerializer(serializers.ModelSerializer):
     
+    
     class Meta:
         model = Marketing
         fields = '__all__'

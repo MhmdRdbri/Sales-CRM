@@ -31,6 +31,9 @@ class MarketingList(generics.ListCreateAPIView):
         marketing = serializer.save()
         send_datetime = make_timezone_aware(marketing.start_date)
         two_days_before_end_date = make_timezone_aware(marketing.end_date - timedelta(days=2))
+        print(send_datetime)
+        print(two_days_before_end_date)
+        print(now())
 
         if send_datetime < now():
             raise PermissionDenied("Cannot schedule SMS for a past date or time.")

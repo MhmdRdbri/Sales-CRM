@@ -65,16 +65,15 @@ class CreateUserView(APIView):
 
     def post(self, request, *args, **kwargs):
         if request.user.profile.work_position != 'admin':
-            return Response({"error": "Only admin users can create new users."},
+            return Response({"error": "Only users with the 'admin' work position can create new users."},
                             status=status.HTTP_403_FORBIDDEN)
-
+        
         serializer = UserCreateSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
             return Response({"message": "User created successfully.", "user_id": user.id}, status=status.HTTP_201_CREATED)
-
+        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class PasswordResetRequestView(APIView):
     permission_classes = [AllowAny]

@@ -13,8 +13,8 @@ class CustomerProfile(models.Model):
         (GOLD, 'Gold'),
     ]
 
-    full_name = models.CharField(max_length=255)
-    phone_number = models.CharField(max_length=255, unique=True)
+    full_name = models.CharField(max_length=255, unique=True)
+    phone_number = models.BigIntegerField()
     date_of_birth = models.DateField(null=True, blank=True)
     email = models.CharField(max_length=255, null=True, blank=True)
     telegram_id = models.CharField(max_length=255, null=True, blank=True)

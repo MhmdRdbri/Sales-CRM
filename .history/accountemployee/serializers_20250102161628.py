@@ -23,25 +23,17 @@ class CustomUserLoginSerializer(serializers.Serializer):
 
 class UserCreateSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
-    profile = serializers.JSONField(write_only=True)  # Add profile as a nested field
 
     class Meta:
         model = CustomUser
-        fields = ('phone_number', 'full_name', 'email', 'password', 'profile')
+        fields = ('phone_number', 'full_name', 'email', 'password')
 
     def create(self, validated_data):
-        # Extract profile data
-        profile_data = validated_data.pop('profile', {})
         password = validated_data.pop('password')
-
-        # Create user
         user = CustomUser.objects.create(**validated_data)
         user.set_password(password)
         user.save()
-
-        # Create profile linked to user
-        Profile.objects.create(user=user, **profile_data)
-        
+        Profile.objects.create(user=user, full_name=validated_data.get('full_name'))
         return user
 
 class PasswordResetRequestSerializer(serializers.Serializer):
