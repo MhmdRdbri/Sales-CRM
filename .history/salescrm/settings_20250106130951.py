@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'salesopportunities',
     'marketing',
     'notice',
+    "dashboard",
 
 ]
 
@@ -151,17 +152,9 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
 }
 
-<<<<<<< Updated upstream
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
-=======
 CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'  # Redis broker
 CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 # CELERY_TIMEZONE = 'Asia/Tehran'
->>>>>>> Stashed changes
