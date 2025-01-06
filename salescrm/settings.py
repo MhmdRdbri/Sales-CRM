@@ -133,6 +133,8 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
+enable_utc = True
+
 
 USE_I18N = True
 
@@ -151,9 +153,9 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
 }
 
+# Celery settings
 BROKER_URL = 'redis://:tdn02KGwA8W0e3GRfWETfzxc@redis-server:6379/0'
 CELERY_RESULT_BACKEND = 'redis://:tdn02KGwA8W0e3GRfWETfzxc@redis-server:6379/0'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'Asia/Tehran'
