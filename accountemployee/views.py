@@ -8,6 +8,7 @@ from .models import *
 from django.urls import reverse
 from django.conf import settings
 from .serializers import *
+from .utils import send_sms
 import http.client
 import json
 from django.contrib.auth.models import User
@@ -82,6 +83,8 @@ class PasswordResetRequestView(APIView):
         if serializer.is_valid():
             code = serializer.create_reset_code()
             print(code)
+            to = [serializer.validated_data['phone_number'],]
+            print(to)      
             return Response({"detail": "Password reset code sent."}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -93,6 +96,9 @@ class AuthenticatedPasswordResetRequestView(APIView):
         serializer = AuthenticatedPasswordResetRequestSerializer()
         code = serializer.create_reset_code(request.user)
         print(code)
+        to = [request.user.profile.phone_number,]
+        print(to)
+
         return Response({"detail": "Password reset code sent to your registered phone number."}, status=status.HTTP_200_OK)
 
 class PasswordResetView(APIView):

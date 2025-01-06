@@ -4,13 +4,14 @@ from products.models import Product
 
 
 class Factors(models.Model):
-    conttract_date = models.DateTimeField(auto_now_add=True)
+    contract_date = models.DateTimeField(auto_now_add=True)
     price = models.IntegerField()
     description = models.TextField()
-    costumer = models.ForeignKey(CustomerProfile, related_name='factor', on_delete=models.CASCADE)
+    costumer = models.ForeignKey(CustomerProfile, related_name='factor', on_delete=models.SET_NULL,null=True)
+    files = models.JSONField(default=list, blank=True)
     
     def __str__(self):
-        return f"Factor #{self.id} - {self.conttract_date}"
+        return f"Factor #{self.id} - {self.contract_date}"
     
 
 class FactorItem(models.Model):
@@ -19,4 +20,4 @@ class FactorItem(models.Model):
     quantity = models.PositiveIntegerField()
 
     def __str__(self):
-        return f"{self.product.name} - {self.quantity}"
+        return f"{self.product.product_name} - {self.quantity}"

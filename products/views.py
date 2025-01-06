@@ -12,8 +12,8 @@ from rest_framework import status
 
 #create a post and list all products
 class ProductListCreateView(APIView):
-    serializer_class = ProductSerilizer
-    permission_classes=[permissions.AllowAny]
+    serializer_class = ProductSerializer
+    permission_classes=[permissions.IsAuthenticated]
     
     def get(self,request:Request,*args, **kwargs):
         
@@ -47,8 +47,8 @@ class ProductListCreateView(APIView):
  #view and update and delete a product by id
 class ProductRetrieveUpdateDeleteView(APIView):
     
-       serializer_class = ProductSerilizer
-       permission_classes=[permissions.AllowAny]
+       serializer_class = ProductSerializer
+       permission_classes=[permissions.IsAuthenticated]
        
        def get(self,request=Request,product_id=int):
            product = get_object_or_404(Product,pk=product_id)
@@ -107,8 +107,8 @@ class ProductRetrieveUpdateDeleteView(APIView):
 
 class CategoryListCreateView(APIView):
     
-    permission_classes=[permissions.AllowAny]
-    serializer_class=CategorySerilizer
+    permission_classes=[permissions.IsAuthenticated]
+    serializer_class=CategorySerializer
     
     def post(self,request:Request):
         
@@ -142,8 +142,8 @@ class CategoryListCreateView(APIView):
    
 class CategoryRetrieveUpdateDeleteView(APIView):
     
-       serializer_class = CategorySerilizer
-       permission_classes=[permissions.AllowAny]
+       serializer_class = CategorySerializer
+       permission_classes=[permissions.IsAuthenticated]
        
        def get(self,request=Request,category_id=int):
            category = get_object_or_404(Category,pk=category_id)
