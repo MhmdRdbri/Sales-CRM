@@ -20,8 +20,8 @@ class CustomerProfile(models.Model):
     email = models.CharField(max_length=255, null=True, blank=True)
     telegram_id = models.CharField(max_length=255, null=True, blank=True)
     national_id = models.BigIntegerField(null=True, blank=True)
-    address = models.TextField()
-    description = models.TextField()
+    address = models.TextField(null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(default=timezone.now)
     instagram_id = models.CharField(max_length=255, null=True, blank=True)
     buyer_rank = models.CharField(

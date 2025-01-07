@@ -14,7 +14,7 @@ class Product(models.Model):
     status = models.BooleanField(default=False,)
     size = models.CharField()
     color = models.CharField()
-    brand = models.CharField()
+    brand = models.CharField(null=True, blank=True)
     product_image = models.ImageField(upload_to='product_image/', null=True, blank=True)
     description = models.TextField()
     category = models.ManyToManyField(Category,related_name="categories",blank=True)
