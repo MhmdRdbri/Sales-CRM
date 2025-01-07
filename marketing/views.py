@@ -8,6 +8,8 @@ from django.utils.timezone import make_aware, now
 from datetime import timedelta
 from .tasks import send_marketing_sms, send_end_marketing_sms
 from celery import current_app
+from django.utils.timezone import now
+from datetime import timedelta
 
 
 def make_timezone_aware(dt):
@@ -29,20 +31,23 @@ class MarketingList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         marketing = serializer.save()
-        send_datetime = make_timezone_aware(marketing.start_date)
-        two_days_before_end_date = make_timezone_aware(marketing.end_date - timedelta(days=2))
-        print(send_datetime)
-        print(two_days_before_end_date)
-        print(now())
 
-        if send_datetime < now():
+        # Ensure start_date and end_date are timezone-aware
+        start_datetime = make_timezone_aware(marketing.start_date)
+        end_datetime = make_timezone_aware(marketing.end_date)
+
+        # Calculate two days before end date
+        two_days_before_end_date = make_timezone_aware(end_datetime - timedelta(days=2))
+
+        if start_datetime < now():
             raise PermissionDenied("Cannot schedule SMS for a past date or time.")
         if two_days_before_end_date < now():
             raise PermissionDenied("Cannot schedule end SMS for a past date or time.")
 
-        # Schedule tasks and store their IDs
-        task_start = send_marketing_sms.apply_async((marketing.id,), eta=send_datetime)
+        # Schedule the SMS tasks and save their task IDs
+        task_start = send_marketing_sms.apply_async((marketing.id,), eta=start_datetime)
         task_end = send_end_marketing_sms.apply_async((marketing.id,), eta=two_days_before_end_date)
+
         marketing.task_start_id = task_start.id
         marketing.task_end_id = task_end.id
         marketing.save()
