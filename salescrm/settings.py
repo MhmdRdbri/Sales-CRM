@@ -109,7 +109,7 @@ DATABASES = {
         "NAME": "salescrm_db",
         "USER": "postgres",
         "PASSWORD": "220152",
-        "HOST": "localhost",
+        "HOST": "db",
         "PORT": "5432",
     }
 }

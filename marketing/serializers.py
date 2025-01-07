@@ -4,6 +4,11 @@ from django.utils.timezone import now, make_aware
 from datetime import datetime
 
 class MarketingSerializer(serializers.ModelSerializer):
+    target_rank = serializers.ListField(
+        child=serializers.ChoiceField(choices=CustomerProfile.BUYER_RANK_CHOICES),
+        write_only=True,
+        required=True,
+    )
     
     
     class Meta:
