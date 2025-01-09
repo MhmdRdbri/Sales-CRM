@@ -16,7 +16,7 @@ class SalesOpportunitySerializer(serializers.ModelSerializer):
     class Meta:
         model = SalesOpportunity
         fields = [
-            'id', 'follow_up_date', 'estimated_amount', 'opportunity_priority',
+            'id', 'follow_up_date', 'estimated_amount', 'opportunity_priority','buyer_type',
             'description', 'created_at', 'profile', 'items', 'new_items'
         ]
 
