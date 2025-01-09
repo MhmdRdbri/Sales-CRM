@@ -25,7 +25,7 @@ class MarketingSerializer(serializers.ModelSerializer):
         marketing_instance = super().create(validated_data)
         
         # Filter and assign target audiences based on rank
-        target_audiences = CustomerProfile.objects.filter(rank__in=target_rank)
+        target_audiences = CustomerProfile.objects.filter(buyer_rank__in=target_rank)
         marketing_instance.target_audiences.set(target_audiences)
         
         return marketing_instance
