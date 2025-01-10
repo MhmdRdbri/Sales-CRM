@@ -10,7 +10,11 @@ urlpatterns = [
     path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
     path('accountemployee/', include('accountemployee.urls', namespace='accountemployee')),
     path('products/', include('products.urls', namespace='products')),
-    path('customerprofile/', include('customerprofile.urls', namespace='customerprofile')),  
+    path('customerprofile/', include('customerprofile.urls', namespace='customerprofile')),
+    path('salesopportunities/', include('salesopportunities.urls', namespace='salesopportunities')), 
     path('factors/', include('factors.urls', namespace='factors')),
+    path('marketing/', include('marketing.urls', namespace='marketing')),
+    path('notice/', include('notice.urls', namespace='notice')),
+    path('dashboard/', include('dashboard.urls', namespace='dashboard')),
     path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

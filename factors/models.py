@@ -6,8 +6,10 @@ from products.models import Product
 class Factors(models.Model):
     contract_date = models.DateTimeField(auto_now_add=True)
     price = models.IntegerField()
-    description = models.TextField()
+    description = models.TextField(null=True,blank=True)
     costumer = models.ForeignKey(CustomerProfile, related_name='factor', on_delete=models.SET_NULL,null=True)
+    files = models.FileField(upload_to='factors_files/', blank=True, null=True)
+
     
     def __str__(self):
         return f"Factor #{self.id} - {self.contract_date}"
@@ -19,4 +21,4 @@ class FactorItem(models.Model):
     quantity = models.PositiveIntegerField()
 
     def __str__(self):
-        return f"{self.product.name} - {self.quantity}"
+        return f"{self.product.product_name} - {self.quantity}"

@@ -1,3 +1,4 @@
+from datetime import timedelta
 from pathlib import Path
 import environ
 import os
@@ -11,10 +12,8 @@ SECRET_KEY = 'django-insecure-icig@9o$jv=+6&i6m69asig*76z(259k5rpcvyu7rk)j)+)hj+
 print("SECRET_KEY from .env:", env("SECRET_KEY", default="Not found"))
 DEBUG = env.bool('DEBUG', default=True)
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
 
-
-# Application definition
 
 INSTALLED_APPS = [
     'jazzmin',
@@ -37,12 +36,17 @@ INSTALLED_APPS = [
     'accountemployee',
     'customerprofile',
     'factors',
+    'salesopportunities',
+    'marketing',
+    'notice',
+    "dashboard",
 
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -69,7 +73,14 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': True,
 }
-
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    'https://2c83-79-127-241-55.ngrok-free.app',
+    'https://127.0.0.1:5173',
+    'https://127.0.0.1:8000'
+    ]
+CSRF_TRUSTED_ORIGINS = ['https://2c83-79-127-241-55.ngrok-free.app',
+'https://127.0.0.1:5173']
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -90,8 +101,7 @@ WSGI_APPLICATION = 'salescrm.wsgi.application'
 
 CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[])
 
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+
 
 DATABASES = {
     "default": {
@@ -99,13 +109,10 @@ DATABASES = {
         "NAME": "salescrm_db",
         "USER": "postgres",
         "PASSWORD": "220152",
-        "HOST": "localhost",
+        "HOST": "db",
         "PORT": "5432",
     }
 }
-
-# Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -123,25 +130,34 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.1/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+
+
+TIME_ZONE = 'Asia/Tehran'
+
 
 USE_I18N = True
 
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 STATIC_URL = 'static/'
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+}
+
+
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'  # Redis broker
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
