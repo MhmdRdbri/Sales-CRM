@@ -17,7 +17,7 @@ class FactorsAdmin(admin.ModelAdmin):
     readonly_fields = ['contract_date'] 
     fieldsets = (
         (None, {
-            'fields': ('costumer', 'price', 'description', 'files')
+            'fields': ('costumer', 'price', 'description')
         }),
         ('Date Information', {
             'fields': ('contract_date',),

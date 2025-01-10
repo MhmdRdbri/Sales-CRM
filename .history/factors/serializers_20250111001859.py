@@ -1,8 +1,6 @@
 from rest_framework import serializers
 from .models import Factors, FactorItem
 from products.models import Product
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
 
 class FactorProductSerializer(serializers.Serializer):
     product_id = serializers.IntegerField()
@@ -12,7 +10,6 @@ class FactorSerializer(serializers.ModelSerializer):
     products = FactorProductSerializer(many=True, write_only=True, required=False)
     files = serializers.FileField(write_only=True, required=False)  # Expect a single file
 
-
     class Meta:
         model = Factors
         fields = ['id', 'contract_date', 'price', 'description', 'costumer', 'products', 'files']
@@ -20,7 +17,6 @@ class FactorSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         products_data = validated_data.pop('products', [])
         file = validated_data.pop('files', None)
-
 
         # Create the factor instance
         factor = Factors.objects.create(**validated_data)
@@ -30,7 +26,6 @@ class FactorSerializer(serializers.ModelSerializer):
             product = Product.objects.get(id=item['product_id'])
             FactorItem.objects.create(factor=factor, product=product, quantity=item['quantity'])
 
-
         # Save the uploaded file if provided
         if file:
             file_path = default_storage.save(f'factor_files/{file.name}', ContentFile(file.read()))
@@ -38,4 +33,3 @@ class FactorSerializer(serializers.ModelSerializer):
 
         factor.save()
         return factor
-

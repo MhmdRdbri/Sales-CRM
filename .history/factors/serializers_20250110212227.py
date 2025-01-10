@@ -10,28 +10,33 @@ class FactorProductSerializer(serializers.Serializer):
 
 class FactorSerializer(serializers.ModelSerializer):
     products = FactorProductSerializer(many=True, write_only=True, required=False)
-    files = serializers.FileField(write_only=True, required=False)  # Expect a single file
-
+    files = serializers.FileField(write_only=True, required=False)
 
     class Meta:
         model = Factors
         fields = ['id', 'contract_date', 'price', 'description', 'costumer', 'products', 'files']
 
     def create(self, validated_data):
+        # Extract products and file data
         products_data = validated_data.pop('products', [])
         file = validated_data.pop('files', None)
 
+        # Debug: Ensure products_data is being processed
+        print("Products Data:", products_data)
 
-        # Create the factor instance
+        # Create factor instance
         factor = Factors.objects.create(**validated_data)
 
-        # Handle products
+        # Debug: Verify factor instance creation
+        print("Factor Created:", factor)
+
+        # Create FactorItem instances
         for item in products_data:
             product = Product.objects.get(id=item['product_id'])
             FactorItem.objects.create(factor=factor, product=product, quantity=item['quantity'])
+            print(f"FactorItem Created for Product ID {product.id} with Quantity {item['quantity']}")
 
-
-        # Save the uploaded file if provided
+        # Handle file upload if provided
         if file:
             file_path = default_storage.save(f'factor_files/{file.name}', ContentFile(file.read()))
             factor.files = file_path
@@ -39,3 +44,20 @@ class FactorSerializer(serializers.ModelSerializer):
         factor.save()
         return factor
 
+    def to_representation(self, instance):
+        # Get default representation
+        representation = super().to_representation(instance)
+
+        # Include products in the response
+        representation['products'] = [
+            {
+                "product_id": item.product.id,
+                "quantity": item.quantity
+            }
+            for item in instance.items.all()
+        ]
+
+        # Add file URL to representation
+        representation['files'] = default_storage.url(instance.files) if instance.files else None
+
+        return representation

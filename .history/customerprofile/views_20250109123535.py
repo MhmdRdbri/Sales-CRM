@@ -1,16 +1,12 @@
 from rest_framework import generics
-from rest_framework.views import APIView
 from .models import CustomerProfile
 from .serializers import *
 from rest_framework.permissions import *
 from rest_framework.exceptions import PermissionDenied
 from factors.models import Factors
 from django.db.models import Avg, Sum
-
 from rest_framework.parsers import MultiPartParser
 from openpyxl import load_workbook
-from rest_framework.response import Response
-
 
 class CustomerProfileListCreateView(generics.ListCreateAPIView):
     queryset = CustomerProfile.objects.all()
@@ -49,7 +45,6 @@ class CustomerProfileRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIV
         
         return super().destroy(request, *args, **kwargs)
 
-
 class UploadCustomerProfilesView(APIView):
     permission_classes = [IsAuthenticated]
     parser_classes = [MultiPartParser]
@@ -84,4 +79,3 @@ class UploadCustomerProfilesView(APIView):
             created_profiles.append(profile.full_name)
 
         return Response({'message': 'Profiles processed successfully', 'profiles': created_profiles})
-

@@ -8,3 +8,4 @@ urlpatterns = [
     path('customers/<int:pk>/', CustomerProfileRetrieveUpdateDeleteView.as_view(), name='customer-detail'),
     path('upload-customers/', UploadCustomerProfilesView.as_view(), name='upload-customers'),
 ]
+]
