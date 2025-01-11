@@ -3,6 +3,7 @@ from .models import Factors, FactorItem
 from products.models import Product
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
+from django.conf import settings
 
 # Serializer for factor items (products in a factor)
 class FactorItemSerializer(serializers.ModelSerializer):
@@ -19,15 +20,20 @@ class FactorProductSerializer(serializers.Serializer):
     quantity = serializers.IntegerField(min_value=1)
 
 
-# Main serializer for Factors
+
 class FactorSerializer(serializers.ModelSerializer):
     products = FactorProductSerializer(many=True, write_only=True, required=False)  # For creating/updating
     items = FactorItemSerializer(many=True, read_only=True)  # For reading existing factor items
-    files = serializers.FileField(write_only=True, required=False)  # File upload support
+    files = serializers.SerializerMethodField()  # For including the file path in the response
 
     class Meta:
         model = Factors
         fields = ['id', 'contract_date', 'price', 'description', 'costumer', 'products', 'items', 'files']
+
+    def get_files(self, obj):
+        if obj.files:
+            return settings.MEDIA_URL + obj.files.name  # Return the full URL of the file
+        return None
 
     def create(self, validated_data):
         products_data = validated_data.pop('products', [])  # Extract products data
