@@ -4,6 +4,11 @@ from products.models import Product
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.conf import settings
+import json
+from rest_framework.exceptions import ValidationError
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Serializer for factor items (products in a factor)
 class FactorItemSerializer(serializers.ModelSerializer):
@@ -24,7 +29,8 @@ class FactorProductSerializer(serializers.Serializer):
 class FactorSerializer(serializers.ModelSerializer):
     products = FactorProductSerializer(many=True, write_only=True, required=False)  # For creating/updating
     items = FactorItemSerializer(many=True, read_only=True)  # For reading existing factor items
-    files = serializers.SerializerMethodField()  # For including the file path in the response
+    files = serializers.FileField(required=False)
+  # For including the file path in the response
 
     class Meta:
         model = Factors
@@ -34,23 +40,34 @@ class FactorSerializer(serializers.ModelSerializer):
         if obj.files:
             return settings.MEDIA_URL + obj.files.name  # Return the full URL of the file
         return None
+    def get_items(self, obj):
+        return [
+            {"product_id": item.product.id, "product_name": item.product.product_name, "quantity": item.quantity}
+            for item in obj.items.all()
+        ]
+        
+    def to_internal_value(self, data):
+        # Handle `products` specifically if it's a string (form-data case)
+        if 'products' in data and isinstance(data['products'], str):
+            try:
+                data['products'] = json.loads(data['products'])
+            except json.JSONDecodeError:
+                raise serializers.ValidationError({"products": "Invalid JSON format in products field."})
+        return super().to_internal_value(data)
 
     def create(self, validated_data):
-        products_data = validated_data.pop('products', [])  # Extract products data
-        file = validated_data.pop('files', None)  # Extract file data
+        # Extract and handle `products` field
+        products_data = validated_data.pop('products', [])
 
         # Create the factor instance
         factor = Factors.objects.create(**validated_data)
 
-        # Handle related products (FactorItem)
+        # Create FactorItem objects
         for item in products_data:
-            product = Product.objects.get(id=item['product_id'])
-            FactorItem.objects.create(factor=factor, product=product, quantity=item['quantity'])
+            try:
+                product = Product.objects.get(id=item['product_id'])
+                FactorItem.objects.create(factor=factor, product=product, quantity=item['quantity'])
+            except Product.DoesNotExist:
+                raise serializers.ValidationError({"product_id": f"Product with ID {item['product_id']} does not exist."})
 
-        # Save the uploaded file if provided
-        if file:
-            file_path = default_storage.save(f'factor_files/{file.name}', ContentFile(file.read()))
-            factor.files = file_path
-
-        factor.save()
         return factor
