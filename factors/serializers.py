@@ -7,6 +7,7 @@ from django.conf import settings
 import json
 from rest_framework.exceptions import ValidationError
 import logging
+from django.http import QueryDict
 
 logger = logging.getLogger(__name__)
 
@@ -46,14 +47,25 @@ class FactorSerializer(serializers.ModelSerializer):
             for item in obj.items.all()
         ]
         
+
     def to_internal_value(self, data):
-        # Handle `products` specifically if it's a string (form-data case)
+        if isinstance(data, QueryDict):
+            data = data.dict()  # Convert QueryDict to a regular dictionary
         if 'products' in data and isinstance(data['products'], str):
             try:
-                data['products'] = json.loads(data['products'])
-            except json.JSONDecodeError:
-                raise serializers.ValidationError({"products": "Invalid JSON format in products field."})
+                products_list = []
+                for item in data['products'].split(','):
+                    product_id, quantity = item.split(':')
+                    products_list.append({
+                        'product_id': int(product_id.strip()),
+                        'quantity': int(quantity.strip())
+                    })
+                data['products'] = products_list
+            except (ValueError, AttributeError):
+                raise serializers.ValidationError({"products": "Invalid format. Expected 'product_id:quantity,product_id:quantity'."})
         return super().to_internal_value(data)
+
+
 
     def create(self, validated_data):
         # Extract and handle `products` field
