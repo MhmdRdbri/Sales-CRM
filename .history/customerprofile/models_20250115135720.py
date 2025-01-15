@@ -29,7 +29,7 @@ class CustomerProfile(models.Model):
     buyer_rank = models.CharField(
         max_length=2,
         choices=BUYER_RANK_CHOICES,
-        default=RED,
+        default=BRONZE,
         blank=True
     )
 
