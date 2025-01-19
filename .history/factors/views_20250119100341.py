@@ -26,6 +26,7 @@ class FactorList(generics.ListCreateAPIView):
         if self.request.user.profile.work_position != 'accountant' and self.request.user.profile.work_position != 'admin' and self.request.user.profile.work_position != 'system_manager':
             raise PermissionDenied("You do not have permission post any factors.")
         
+        print(request.data)
         return self.create(request, *args, **kwargs)
 
 

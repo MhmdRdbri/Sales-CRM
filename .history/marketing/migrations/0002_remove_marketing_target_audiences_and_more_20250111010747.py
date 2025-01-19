@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('customerprofile', '0001_initial'),
+        ('customerprofile', '0002_remove_customerprofile_factors'),
         ('marketing', '0001_initial'),
     ]
 

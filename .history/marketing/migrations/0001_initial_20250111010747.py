@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('customerprofile', '0001_initial'),
+        ('customerprofile', '0002_remove_customerprofile_factors'),
     ]
 
     operations = [

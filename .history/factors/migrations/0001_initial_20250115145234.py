@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('customerprofile', '0001_initial'),
+        ('customerprofile', '0002_alter_customerprofile_created_at_and_more'),
         ('products', '0004_alter_product_color_alter_product_description_and_more'),
     ]
 
