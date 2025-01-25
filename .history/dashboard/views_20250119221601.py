@@ -57,15 +57,15 @@ class DashboardDetail(APIView):
     def get(self, request):
         # Marketing status counts
         marketing_status_counts = Marketing.objects.values('status').annotate(count=Count('status'))
-        marketing_data = {status['status']: status['count'] for status in marketing_status_counts} or None
+        marketing_data = {status['status']: status['count'] for status in marketing_status_counts}
 
         # Factors and products sold
-        total_factors = Factors.objects.count() or None
-        total_products_sold = FactorItem.objects.aggregate(total_quantity=Sum('quantity'))['total_quantity'] or None
-        total_sales = Factors.objects.aggregate(total_price=Sum('price'))['total_price'] or None
+        total_factors = Factors.objects.count()
+        total_products_sold = FactorItem.objects.aggregate(total_quantity=Sum('quantity'))['total_quantity'] or 0
+        total_sales = Factors.objects.aggregate(total_price=Sum('price'))['total_price'] or 0
 
         # Customer count
-        total_customers = CustomerProfile.objects.count() or None
+        total_customers = CustomerProfile.objects.count()
 
         # Closest sales opportunity count and list
         closest_opportunity_date = SalesOpportunity.objects.filter(
@@ -76,21 +76,18 @@ class DashboardDetail(APIView):
             follow_up_date=closest_opportunity_date
         ) if closest_opportunity_date else []
 
-        # Handle the case where closest_opportunities is a list
-        closest_opportunity_count = len(closest_opportunities) if isinstance(closest_opportunities, list) else closest_opportunities.count()
-        closest_opportunity_list = list(closest_opportunities.values()) if closest_opportunity_date else None
+        closest_opportunity_count = closest_opportunities.count()
+        closest_opportunity_list = list(closest_opportunities.values())
 
-        # Customer chart data
         customer_chart_data = self.get_customer_data()
 
-        labels = list(customer_chart_data.keys()) if customer_chart_data else None
-        counts = list(customer_chart_data.values()) if customer_chart_data else None
+        labels = list(customer_chart_data.keys())  # سال-ماه
+        counts = list(customer_chart_data.values())  # تعداد مشتریان
 
-        # Sales data
         sales_data = self.get_sales_data()
 
-        sales_labels = list(sales_data.keys()) if sales_data else None
-        sales_values = list(sales_data.values()) if sales_data else None
+        sales_labels = list(sales_data.keys())  # سال-ماه
+        sales_values = list(sales_data.values())  # مجموع قیمت فروش
 
         # Prepare the response
         response_data = {
@@ -115,7 +112,7 @@ class DashboardDetail(APIView):
                 "labels": sales_labels,
                 "data": sales_values
             }
+
         }
 
         return Response(response_data, status=200)
-
