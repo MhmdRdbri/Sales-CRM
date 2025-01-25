@@ -1,0 +1,9 @@
+{
+    "django": {
+      "settingsFile": "./salescrm/settings.py"
+    },
+    "disks":{
+      "name": "jalilvand-disk",
+      "mountTo": "media"
+    }
+  }

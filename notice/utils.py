@@ -8,6 +8,7 @@ def send_sms(to, message):
     try:
         message_id = client.send("+983000505", to, message, "summary")
         print(message_id)
+        
     except Error as e:
         print("Error handled => code: %s, message: %s" % (e.code, e.message))
 
