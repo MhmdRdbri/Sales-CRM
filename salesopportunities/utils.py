@@ -12,7 +12,7 @@ def prepare_sms_message(opportunity):
         "KH": "خرده",
     }
 
-    message = f"یادآوری فرصت فروش: پیگیری با مشتری {opportunity.profile.full_name} در تاریخ {opportunity.follow_up_date} (فردا).\n" \
+    message = f"یادآوری فرصت فروش: پیگیری با مشتری {opportunity.profile.full_name} در تاریخ {opportunity.follow_up_date} (امروز).\n" \
               f"اولویت: {priority_translations.get(opportunity.opportunity_priority, 'نامشخص')}.\n" \
               f"نوع خریدار: {buyer_type_translations.get(opportunity.buyer_type, 'نامشخص')}.\n" \
               f"توضیحات: {opportunity.description or 'بدون توضیحات'}."

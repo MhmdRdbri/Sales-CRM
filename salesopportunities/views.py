@@ -20,7 +20,7 @@ class SalesOpportunityViewSet(viewsets.ModelViewSet):
 
         # Set the send time to 8 AM on the follow_up_date
         follow_up_date = opportunity.follow_up_date
-        send_datetime = datetime.combine(follow_up_date, time(19, 32))  # Set time to 8 AM
+        send_datetime = datetime.combine(follow_up_date, time(8, 0))  # Set time to 8 AM
 
         # Ensure send_datetime is timezone-aware
         if not send_datetime.tzinfo:
