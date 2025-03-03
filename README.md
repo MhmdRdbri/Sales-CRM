@@ -14,7 +14,6 @@ An intuitive and efficient Customer Relationship Management (CRM) system built w
 - [Project Structure](#project-structure)
 - [Contributing](#contributing)
 - [License](#license)
-- [Contact](#contact)
 
 # About the Project
 Sales-CRM is a robust and user-friendly CRM system developed using the Django framework. It streamlines sales workflows, effectively manages customer data, and boosts overall productivity. By centralizing customer information and automating key processes, Sales-CRM empowers sales teams to focus on building strong customer relationships and closing deals efficiently.
