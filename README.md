@@ -54,7 +54,7 @@ Follow these instructions to set up and run the Sales-CRM system locally.
 
 ```bash
 git clone https://github.com/MhmdRdbri/Sales-CRM.git
-cd Line-Follower-Robot
+cd Sales-CRM
 ```
 
 2. **Set Up the Backend:**
